@@ -1,42 +1,34 @@
-function Perf(handler, args) {
-	var perf
-	var amount = Number.isFinite(args) ? args : 1
+function Perf(handler, options) {
+	var amount = Number.isFinite(options) ? options : 1
 	var async = false
 	var elapsed = true
 	var title = ''
 
 	if (typeof handler === 'function') {
-		if (typeof args === 'object') {
-			amount = Number.isFinite(args.amount) ? args.amount : amount
-			async = !!args.async || async
-			elapsed = !!args.elapsed || elapsed
-			title = args.title || title
+		if (typeof options === 'object') {
+			amount = Number.isFinite(options.amount) ? options.amount : amount
+			async = !!options.async || async
+			elapsed = !!options.elapsed || elapsed
+			title = options.title || title
 		}
 
-		perf = perfLogger()
-
+		ping()
 		if (async) {
 			handleAsync()
-			return
+		} else {
+			handleSync()
 		}
-
-		while(--amount > -1) {
-			handler()
-		}
-
-		report()
-		return
 	}
 
 	var startAt = getTime()
 
-	perfLogger.reset = function () {
+	ping.reset = function () {
 		startAt = getTime()
 	}
 
-	return perfLogger
+	return ping
 
-	function perfLogger(args) {
+	function ping(args) {
 		var now = getTime()
 		var lapse = Math.round(now - startAt)
 		if (args) {
@@ -48,6 +40,11 @@ function Perf(handler, args) {
 		return lapse
 	}
 
+	function handleSync() {
+		while(--amount > -1) handler()
+		report()
+	}
+
 	function handleAsync() {
 		if (--amount > -1) {
 			handler(handleAsync)
@@ -57,7 +54,7 @@ function Perf(handler, args) {
 	}
 
 	function report() {
-		console.log(perfLogger() + 'ms', title)
+		console.log(ping() + 'ms', title)
 	}
 }
 
