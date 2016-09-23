@@ -2,15 +2,27 @@
 
 ```
 var perf = Galactic.perf()
-perf('one-thing')
-perf('another-thing')
+perf('one-thing') // logs time since perf was created
+perf('another-thing') // logs time since 'one-thing'
+```
 
+### Speedmark of 1000 interations
+
+```
+Galactic.perf(() => {
+	// perform synchronous operation here
+}, 1000)
+```
+
+### Async speedmark of 1000 interations
+
+```
 Galactic.perf((resolve) => {
-	// do something and then resolve
+	// perform asynchronous operation and then...
 	resolve()
 }, {
-	defer: true,
-	name: 'myTest',
-	amount: 10
+	amount: 1000,
+	async: true,
+	name: 'myTest'
 })
 ```

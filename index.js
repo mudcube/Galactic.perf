@@ -1,22 +1,22 @@
 function Perf(handler, args) {
 	var perf
 	var amount = Number.isFinite(args) ? args : 1
-	var defer = false
+	var async = false
 	var elapsed = true
 	var title = ''
 
 	if (typeof handler === 'function') {
 		if (typeof args === 'object') {
 			amount = Number.isFinite(args.amount) ? args.amount : amount
-			defer = !!args.defer || defer
+			async = !!args.async || async
 			elapsed = !!args.elapsed || elapsed
 			title = args.title || title
 		}
 
 		perf = perfLogger()
 
-		if (defer) {
-			emitDeferred()
+		if (async) {
+			handleAsync()
 			return
 		}
 
@@ -48,9 +48,9 @@ function Perf(handler, args) {
 		return lapse
 	}
 
-	function emitDeferred() {
+	function handleAsync() {
 		if (--amount > -1) {
-			handler(emitDeferred)
+			handler(handleAsync)
 		} else {
 			report()
 		}
