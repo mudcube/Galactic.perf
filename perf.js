@@ -1,4 +1,4 @@
-function Perf(handler, options) {
+function perf(handler, options) {
 	var amount = Number.isFinite(options) ? options : 1
 	var async = false
 	var elapsed = true
@@ -20,22 +20,22 @@ function Perf(handler, options) {
 		}
 	}
 
-	var startAt = getTime()
+	var startTime = now()
 
 	ping.reset = function () {
-		startAt = getTime()
+		startTime = now()
 	}
 
 	return ping
 
 	function ping(args) {
-		var now = getTime()
-		var lapse = Math.round(now - startAt)
+		var currentTime = now()
+		var lapse = Math.round(currentTime - startTime)
 		if (args) {
 			log(lapse, args)
 		}
 		if (elapsed) {
-			startAt = now
+			startTime = currentTime
 		}
 		return lapse
 	}
@@ -74,7 +74,7 @@ function canLogColors() {
 	return !!window.chrome
 }
 
-var getTime = (() => {
+var now = (() => {
 	if (typeof window === 'object' && window.performance && window.performance.now) {
 		var performance = window.performance
 		return performance.now.bind(performance)
@@ -85,9 +85,6 @@ var getTime = (() => {
 	}
 })()
 
-if (typeof module !== 'undefined' && module.exports) {
-	module.exports = Perf
-} else {
-	self.Galactic || (self.Galactic = {})
-	Galactic.perf = Perf
-}
+global.Galactic || (global.Galactic = {})
+global.Galactic.now = now
+global.Galactic.perf = perf
