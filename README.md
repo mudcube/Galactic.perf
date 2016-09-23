@@ -1,5 +1,7 @@
 # Galactic.perf(...)
 
+### Manual speedmark
+
 ```
 var perf = Galactic.perf()
 perf('one-thing') // logs time since perf was created
@@ -22,7 +24,6 @@ Galactic.perf((resolve) => {
 	resolve()
 }, {
 	amount: 1000,
-	async: true,
-	name: 'myTest'
+	async: true
 })
 ```
