@@ -85,4 +85,9 @@ var getTime = (() => {
 	}
 })()
 
-module.exports = Perf
+if (typeof module !== 'undefined' && module.exports) {
+	module.exports = Perf
+} else {
+	self.Galactic || (self.Galactic = {})
+	Galactic.perf = Perf
+}
